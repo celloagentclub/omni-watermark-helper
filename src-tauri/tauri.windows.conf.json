@@ -1,0 +1,9 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "bundle": {
+    "resources": {
+      "resources/bin/windows/node.exe": "bin/node.exe",
+      "resources/bin/windows/ffmpeg.exe": "bin/ffmpeg.exe"
+    }
+  }
+}

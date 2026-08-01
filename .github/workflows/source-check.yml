@@ -1,0 +1,63 @@
+name: Source check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, windows-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check JavaScript
+        run: npm run check
+
+      - name: Install packaged runtime dependencies
+        run: npm ci --prefix src-tauri/resources/app-runtime --omit=dev
+
+      - name: Prepare macOS compile-check resources
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          mkdir -p src-tauri/resources/bin/macos
+          cp "$(command -v node)" src-tauri/resources/bin/macos/node
+          touch src-tauri/resources/bin/macos/ffmpeg
+          chmod +x src-tauri/resources/bin/macos/node src-tauri/resources/bin/macos/ffmpeg
+
+      - name: Prepare Windows compile-check resources
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force src-tauri/resources/bin/windows | Out-Null
+          Copy-Item (Get-Command node).Source src-tauri/resources/bin/windows/node.exe
+          New-Item -ItemType File -Force src-tauri/resources/bin/windows/ffmpeg.exe | Out-Null
+
+      - name: Check Rust formatting
+        working-directory: src-tauri
+        run: cargo fmt --check
+
+      - name: Check Tauri backend
+        working-directory: src-tauri
+        run: cargo check --locked

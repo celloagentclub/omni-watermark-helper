@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Omni 去水印助手图标">
+  <rect width="128" height="128" rx="24" fill="#080d0f"/>
+  <path d="M28 29h72c7.18 0 13 5.82 13 13v44c0 7.18-5.82 13-13 13H28c-7.18 0-13-5.82-13-13V42c0-7.18 5.82-13 13-13Z" fill="#121b1e"/>
+  <path d="M28 29h72c7.18 0 13 5.82 13 13v10H15V42c0-7.18 5.82-13 13-13Z" fill="#ff6a00"/>
+  <path d="M71.5 39.5h26" stroke="#fff4df" stroke-width="6" stroke-linecap="round"/>
+  <path d="M37 72c11.76-4.92 18.08-11.24 23-23 4.92 11.76 11.24 18.08 23 23-11.76 4.92-18.08 11.24-23 23-4.92-11.76-11.24-18.08-23-23Z" fill="#fff4df"/>
+  <path d="M76 83l20 20" stroke="#ff6a00" stroke-width="10" stroke-linecap="round"/>
+  <path d="M91 83L76 98" stroke="#ff6a00" stroke-width="10" stroke-linecap="round"/>
+</svg>

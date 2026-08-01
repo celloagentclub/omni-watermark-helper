@@ -1,0 +1,23 @@
+[package]
+name = "omni-watermark-helper"
+version = "0.1.5"
+description = "Omni 去水印助手"
+authors = ["Omni Watermark Helper"]
+edition = "2021"
+
+[lib]
+name = "omni_watermark_helper_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["protocol-asset"] }
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "0.22"
+p256 = { version = "0.13", features = ["ecdsa"] }
+sha2 = "0.10"
+rfd = "0.17"

@@ -1,0 +1,38 @@
+{
+  "name": "omni-watermark-cleaner",
+  "version": "0.1.5",
+  "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/celloagentclub/omni-watermark-helper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/celloagentclub/omni-watermark-helper/issues"
+  },
+  "homepage": "https://github.com/celloagentclub/omni-watermark-helper#readme",
+  "type": "module",
+  "description": "Remove the visible Gemini/Omni sparkle watermark from generated videos while preserving the rest of the frame.",
+  "scripts": {
+    "clean:video": "node src/omni-watermark.js",
+    "clean:image": "node src/omni-image-watermark.js",
+    "clean:samples": "node src/omni-watermark.js \"omni视频\" --out-dir outputs",
+    "ui:serve": "python3 -m http.server 4173 -d ui",
+    "ui:serve:if-needed": "node scripts/serve-ui-if-needed.js",
+    "app:dev": "tauri dev",
+    "app:build": "tauri build",
+    "app:info": "tauri info",
+    "prepare:runtime:mac": "bash scripts/prepare-macos-runtime.sh",
+    "prepare:runtime:windows": "powershell -ExecutionPolicy Bypass -File scripts/prepare-windows-runtime.ps1",
+    "build:mac": "npm run prepare:runtime:mac && tauri build --config src-tauri/tauri.macos.conf.json --bundles app,dmg",
+    "build:windows": "npm run prepare:runtime:windows && tauri build --config src-tauri/tauri.windows.conf.json --bundles nsis,msi",
+    "check": "node --check src/omni-watermark.js && node --check src/omni-image-watermark.js && node --check ui/app.js"
+  },
+  "dependencies": {
+    "@pilio/gemini-watermark-remover": "1.0.33",
+    "sharp": "0.35.3"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.11.2"
+  }
+}

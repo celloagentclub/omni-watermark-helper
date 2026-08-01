@@ -1,0 +1,48 @@
+# JavaScript dependencies and generated runtime
+node_modules/
+src-tauri/resources/app-runtime/node_modules/
+src-tauri/resources/bin/macos/*
+!src-tauri/resources/bin/macos/README.md
+src-tauri/resources/bin/windows/*
+!src-tauri/resources/bin/windows/README.md
+
+# Rust and Tauri build output
+src-tauri/target*/
+release-dist/
+handoff-dist/
+版本/
+*.dmg
+*.msi
+*.zip
+
+# Processing output and local test assets
+.omni-watermark-work/
+artifacts/
+output/
+outputs/
+omni视频/
+/*.mp4
+/omni-*.png
+.playwright-cli/
+.playwright-mcp/
+
+# Private deployment and license data
+.env
+.env.*
+!.env.example
+cloudflare/.secrets*
+cloudflare/.license-private*
+cloudflare/generated-codes-*
+cloudflare/import-*
+cloudflare/wrangler.toml
+
+# Internal handoff and local notes
+/WINDOWS_AI_HANDOFF.md
+/WINDOWS_CODEX_HANDOFF_*.md
+/lark-omni-operation-manual.xml
+/.impeccable.md
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+*.log

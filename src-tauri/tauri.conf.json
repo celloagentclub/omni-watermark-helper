@@ -1,0 +1,57 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Omni 去水印助手",
+  "version": "0.1.5",
+  "identifier": "com.omni.watermark-helper",
+  "build": {
+    "beforeDevCommand": "npm run ui:serve:if-needed",
+    "devUrl": "http://127.0.0.1:4173",
+    "frontendDist": "../ui"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "title": "Omni 去水印助手",
+        "width": 1220,
+        "height": 820,
+        "minWidth": 980,
+        "minHeight": 680,
+        "resizable": true,
+        "fullscreen": false,
+        "dragDropEnabled": false
+      }
+    ],
+    "security": {
+      "csp": null,
+      "assetProtocol": {
+        "enable": true,
+        "scope": [
+          "$VIDEO/**/*",
+          "$PICTURE/**/*",
+          "$DESKTOP/**/*",
+          "$DOWNLOAD/**/*",
+          "$DOCUMENT/**/*"
+        ]
+      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "resources": {
+      "../src": "src",
+      "resources/app-runtime/node_modules": "node_modules",
+      "resources/third-party": "third-party",
+      "../package.json": "package.json"
+    },
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "category": "Video"
+  }
+}

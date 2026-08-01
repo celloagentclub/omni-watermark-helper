@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Omni 去水印助手</title>
+    <link rel="icon" href="./assets/app-icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <img class="app-icon" src="./assets/app-icon.svg" alt="" />
+          <div>
+            <p class="eyebrow">永久授权 / 本机永久可用</p>
+            <h1>Omni 去水印助手</h1>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button class="license-pill license-button" id="openActivation" type="button" data-license-state="active">
+            <span class="dot"></span>
+            <span>授权中心</span>
+            <strong>永久版</strong>
+          </button>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <aside class="rail rail-left">
+          <section class="panel intake-panel">
+            <div class="section-heading">
+              <span>批量上传</span>
+              <button class="text-button" id="clearQueue" type="button">清空</button>
+            </div>
+
+            <div class="media-mode-switch" id="mediaModeSwitch" role="radiogroup" aria-label="处理类型">
+              <button class="mode-option active" type="button" role="radio" aria-checked="true" data-mode="video">
+                视频
+              </button>
+              <button class="mode-option" type="button" role="radio" aria-checked="false" data-mode="image">
+                图片
+              </button>
+            </div>
+
+            <label class="dropzone" id="dropzone">
+              <input id="fileInput" type="file" accept="video/*" multiple />
+              <span class="upload-mark" aria-hidden="true">⇧</span>
+              <span class="drop-title" id="dropTitle">点击选择 10 秒视频</span>
+              <span class="drop-meta" id="dropMeta">支持批量 MP4 / MOV · 9:16 / 16:9 · 本地处理</span>
+            </label>
+
+            <div class="license-box">
+              <div>
+                <span class="label">机器码</span>
+                <strong id="licenseMachineText">读取中</strong>
+              </div>
+              <button class="secondary-button" id="openActivationSecondary" type="button">激活授权</button>
+            </div>
+          </section>
+
+          <section class="panel stats-panel">
+            <div class="section-heading">
+              <span>今日批次</span>
+            </div>
+            <div class="stats-grid">
+              <div>
+                <strong id="statTotal">0</strong>
+                <span>待处理</span>
+              </div>
+              <div>
+                <strong id="statDone">0</strong>
+                <span>已完成</span>
+              </div>
+              <div>
+                <strong id="statTime">--</strong>
+                <span>预计</span>
+              </div>
+            </div>
+          </section>
+        </aside>
+
+        <section class="queue-panel panel">
+          <div class="queue-header">
+            <div>
+              <h2>处理队列</h2>
+              <p class="queue-subtitle" id="queueSubtitle">固定 10 秒视频，按加入顺序批量处理</p>
+            </div>
+            <div class="queue-actions">
+              <button class="secondary-button" id="addSamples" type="button">载入示例</button>
+              <button class="primary-button" id="startBatch" type="button">开始去水印</button>
+            </div>
+          </div>
+
+          <div class="batch-summary" id="batchSummary" role="status" aria-live="polite" hidden>
+            <div>
+              <span class="summary-mark" id="batchSummaryMark" aria-hidden="true">✓</span>
+              <p>
+                <strong id="batchSummaryTitle">本批次处理完成</strong>
+                <span id="batchSummaryMeta">成功 0 个，失败 0 个</span>
+              </p>
+            </div>
+            <button class="secondary-button" id="retryFailed" type="button" hidden>重试失败项</button>
+          </div>
+
+          <div class="queue-table" id="queueTable" aria-live="polite">
+            <div class="queue-empty" id="queueEmpty">
+              <span class="empty-glyph" aria-hidden="true"></span>
+              <strong>暂无视频</strong>
+              <span>队列等待文件</span>
+            </div>
+          </div>
+        </section>
+
+        <aside class="rail rail-right">
+          <section class="panel quality-panel">
+            <div class="section-heading">
+              <span id="qualityTitle">输出档位</span>
+            </div>
+            <div class="quality-switch" id="qualitySwitch" role="radiogroup" aria-label="输出档位">
+              <button class="quality-option active" type="button" role="radio" aria-checked="true" data-quality="fast">
+                <span>标准</span>
+                <strong>CRF 18</strong>
+              </button>
+              <button class="quality-option" type="button" role="radio" aria-checked="false" data-quality="high">
+                <span>高清</span>
+                <strong>CRF 10</strong>
+              </button>
+              <button class="quality-option" type="button" role="radio" aria-checked="false" data-quality="lossless">
+                <span>无损编码</span>
+                <strong>CRF 0</strong>
+              </button>
+            </div>
+            <div class="image-output-note" id="imageOutputNote" hidden>
+              <strong>保持原格式</strong>
+              <span>PNG / JPG / WebP</span>
+            </div>
+          </section>
+
+          <section class="panel output-panel">
+            <div class="section-heading">
+              <span>输出路径</span>
+              <span class="chip">自动</span>
+            </div>
+            <div class="output-path-box">
+              <span class="label">默认保存到</span>
+              <strong id="outputPathPreview">同目录/去除水印/原文件名_去水印.mp4</strong>
+              <span id="outputPathHint">每个视频会在自己的原文件夹旁新建「去除水印」文件夹</span>
+            </div>
+          </section>
+
+          <section class="panel preview-panel">
+            <div class="section-heading">
+              <span id="previewTitle">所选文件预览</span>
+              <span class="chip" id="previewChip">未选择</span>
+            </div>
+            <div class="preview-stage">
+              <div class="preview-frame before">
+                <span>原始</span>
+                <video id="sourceVideoPreview" class="preview-media" muted playsinline preload="metadata" hidden></video>
+                <img id="sourceImagePreview" class="preview-media" alt="所选原始图片预览" hidden />
+                <div class="preview-placeholder" id="sourcePreviewPlaceholder">
+                  <strong>等待选择文件</strong>
+                  <small>加入文件后显示真实内容</small>
+                </div>
+              </div>
+              <div class="preview-frame after">
+                <span>处理后</span>
+                <video id="outputVideoPreview" class="preview-media" muted playsinline preload="metadata" hidden></video>
+                <img id="outputImagePreview" class="preview-media" alt="处理后图片预览" hidden />
+                <div class="preview-placeholder" id="outputPreviewPlaceholder">
+                  <strong>尚未处理</strong>
+                  <small>完成后显示输出内容</small>
+                </div>
+              </div>
+            </div>
+            <div class="preview-context" id="previewContext">
+              <strong>尚未选择文件</strong>
+              <span>队列中的选中项会显示在这里</span>
+            </div>
+          </section>
+
+        </aside>
+      </section>
+    </main>
+
+    <div class="mobile-action-bar" id="mobileActionBar">
+      <div>
+        <strong id="mobileQueueCount">0 个待处理</strong>
+        <span>本地批量处理</span>
+      </div>
+      <button class="primary-button" id="mobileStartBatch" type="button">开始去水印</button>
+    </div>
+
+    <section class="activation-modal" id="activationModal" role="dialog" aria-modal="true" aria-labelledby="activationTitle" hidden>
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <p class="eyebrow">一机一码</p>
+            <h2 id="activationTitle">授权激活</h2>
+          </div>
+          <button class="icon-button" id="closeActivation" type="button" aria-label="关闭授权窗口">×</button>
+        </div>
+
+        <div class="activation-grid">
+          <form class="activation-form">
+            <label class="field-row">
+              <span>激活码</span>
+              <input id="activationCodeInput" type="text" placeholder="输入私信收到的激活码" autocomplete="off" />
+            </label>
+            <label class="field-row">
+              <span>本机机器码</span>
+              <span class="copy-field">
+                <input id="modalMachineCode" type="text" value="读取中" readonly />
+                <button class="secondary-button" id="copyMachineCode" type="button">复制</button>
+              </span>
+            </label>
+            <button class="primary-button" id="bindMachine" type="button">绑定本机</button>
+            <span class="activation-status" id="activationStatus">等待输入激活码</span>
+            <div class="license-rules">
+              <span>永久授权</span>
+              <span>一台电脑</span>
+              <span>本机永久</span>
+            </div>
+          </form>
+
+          <aside class="qr-card">
+            <img src="./assets/contact-qr-crop.png" alt="微信二维码：Cello电商AI-出海版" />
+            <strong>扫码添加微信获取激活码</strong>
+            <span>激活码私信发放，一码绑定一台电脑</span>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

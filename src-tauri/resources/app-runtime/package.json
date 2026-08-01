@@ -1,0 +1,9 @@
+{
+  "name": "omni-watermark-runtime",
+  "version": "0.1.5",
+  "private": true,
+  "dependencies": {
+    "@pilio/gemini-watermark-remover": "1.0.33",
+    "sharp": "0.35.3"
+  }
+}
