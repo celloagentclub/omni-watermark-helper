@@ -25,7 +25,7 @@ Rust 或 FFmpeg。
 
 Windows x64 源码、Tauri 配置和 CI 编译检查已经放在仓库里，但当前还没有经过真实
 Windows 电脑完整打包和干净机验收，因此暂不标记为稳定版。维护者可以通过 GitHub
-Actions 的 `Windows package` workflow 自动生成 `.exe` / `.msi` 安装包，也可以按
+Actions 的 `Windows package` workflow 自动生成 NSIS `.exe` 安装包，也可以按
 [Windows 打包说明](docs/windows-packaging.md) 在 Windows 真机手工打包。
 
 ## 交流群

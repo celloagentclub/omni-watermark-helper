@@ -11,7 +11,7 @@
 2. 选择 `Windows package`。
 3. 点击 `Run workflow`，输入要打包的标签，例如 `v0.1.5`。
 4. 构建完成后，下载 `omni-watermark-helper-<tag>-windows` artifact。
-5. workflow 会同时把 `.exe` / `.msi` 上传到对应 GitHub Release。
+5. workflow 会把 NSIS `.exe` 上传到对应 GitHub Release，普通用户优先使用这个安装包。
 
 这个 workflow 会在 Windows runner 上安装 Node.js、Rust 和 FFmpeg，并在打包前检查 FFmpeg
 是否包含 `libx264`、PNG 编码器，且不包含 `--enable-nonfree`。
@@ -55,6 +55,8 @@ src-tauri\target\release\bundle\msi\
 ```
 
 一般优先给普通用户下载 NSIS `.exe` 安装包；MSI 更适合企业分发或自动化部署。
+如果确实需要 MSI，使用 `npm run build:windows:msi` 单独构建；当前 GitHub runner 的
+WiX `light.exe` 可能失败，所以 MSI 不作为本次自动发布的阻塞项。
 
 ## 验收清单
 

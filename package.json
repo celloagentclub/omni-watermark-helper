@@ -26,6 +26,8 @@
     "prepare:runtime:windows": "powershell -ExecutionPolicy Bypass -File scripts/prepare-windows-runtime.ps1",
     "build:mac": "npm run prepare:runtime:mac && tauri build --config src-tauri/tauri.macos.conf.json --bundles app,dmg",
     "build:windows": "npm run prepare:runtime:windows && tauri build --config src-tauri/tauri.windows.conf.json --bundles nsis,msi",
+    "build:windows:nsis": "npm run prepare:runtime:windows && tauri build --config src-tauri/tauri.windows.conf.json --bundles nsis",
+    "build:windows:msi": "npm run prepare:runtime:windows && tauri build --config src-tauri/tauri.windows.conf.json --bundles msi",
     "check": "node --check src/omni-watermark.js && node --check src/omni-image-watermark.js && node --check ui/app.js"
   },
   "dependencies": {
