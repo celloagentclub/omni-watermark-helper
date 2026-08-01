@@ -6,6 +6,34 @@
 
 > 仅处理你有权编辑和发布的内容，并自行确认用途符合相关服务条款及当地法律。
 
+## 直接使用
+
+### macOS Apple Silicon
+
+普通用户可以直接到 [v0.1.5 Release](https://github.com/celloagentclub/omni-watermark-helper/releases/tag/v0.1.5)
+下载 `Omni 去水印助手_0.1.5_arm64.dmg`，安装后打开使用，不需要安装 Node.js、
+Rust 或 FFmpeg。
+
+当前公开包适用于 Apple Silicon Mac。因为这个版本还没有 Developer ID 签名和 Apple
+公证，首次打开时 macOS 可能会提示无法验证开发者：
+
+- 推荐方式：在 Finder 中右键应用图标，选择“打开”，再确认打开。
+- 也可以在“系统设置 -> 隐私与安全性”里找到拦截提示，选择“仍要打开”。
+- 安装包 SHA-256：`005a479cca172ea429a82be79ec2c16f40d9f5ffe1f351dd9d8136369f08151a`。
+
+### Windows
+
+Windows x64 源码、Tauri 配置和 CI 编译检查已经放在仓库里，但当前还没有经过真实
+Windows 电脑完整打包和干净机验收，因此暂不提供稳定 Windows 安装包。Windows 用户
+可以先按下方开发说明从源码运行；正式安装包会在 Windows 真机问题修复后再发布。
+
+## 交流群
+
+欢迎加入“AI 视频生成交流群”交流使用体验、样本问题和打包反馈。二维码可能会过期，
+失效后可以在 GitHub Issue 里留言提醒更新。
+
+<img src="docs/wechat-ai-video-group.png" alt="AI 视频生成交流群微信二维码" width="320">
+
 ## 功能
 
 - 支持 MP4、MOV、M4V、WebM 视频及 PNG、JPG、JPEG、WebP 图片。
@@ -13,9 +41,9 @@
 - 视频提供标准（CRF 18）、高清（CRF 10）和无损编码（CRF 0）三档输出。
 - 多帧定位水印，成品进行 8 帧复检；复检未通过时失败关闭，不发布未确认结果。
 - 默认保留原音轨，结果写入源文件旁的 `去除水印` 文件夹。
-- 支持 macOS Apple Silicon 和 Windows x64 打包配置。
+- macOS Apple Silicon 已完成 DMG 打包；Windows x64 源码和构建配置已保留，待真机验收。
 
-## 处理流程
+## 处理边界
 
 透明水印优先按 alpha 合成公式反推原像素；复杂纹理或高反光区域会切换到形状
 遮罩修复或混合策略：
