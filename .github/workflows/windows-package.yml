@@ -1,0 +1,83 @@
+name: Windows package
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to build and update
+        required: true
+        default: v0.1.5
+  push:
+    tags:
+      - v*
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: windows-latest
+    env:
+      RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+
+    steps:
+      - name: Check out release source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install static GPL FFmpeg with libx264
+        shell: pwsh
+        run: |
+          choco install ffmpeg -y --no-progress
+          $env:Path = "$env:ChocolateyInstall\bin;$env:Path"
+          $ffmpegFile = Get-ChildItem -Path "$env:ChocolateyInstall\lib\ffmpeg\tools" -Recurse -Filter ffmpeg.exe | Select-Object -First 1
+          if ($ffmpegFile) {
+            $ffmpeg = $ffmpegFile.FullName
+          } else {
+            $ffmpeg = (Get-Command ffmpeg.exe -ErrorAction Stop).Source
+          }
+          "OMNI_FFMPEG_PATH=$ffmpeg" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          & $ffmpeg -hide_banner -version
+          $encoders = & $ffmpeg -hide_banner -encoders 2>&1 | Out-String
+          if ($LASTEXITCODE -ne 0 -or $encoders -notmatch 'libx264' -or $encoders -notmatch '\spng\s') {
+            throw "The runner FFmpeg does not provide the encoders required by Omni 去水印助手."
+          }
+          if ((& $ffmpeg -version 2>&1 | Out-String) -match '--enable-nonfree') {
+            throw "The runner FFmpeg contains --enable-nonfree and cannot be redistributed."
+          }
+
+      - name: Install JavaScript dependencies
+        run: npm ci
+
+      - name: Build Windows installers
+        run: npm run build:windows
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: omni-watermark-helper-${{ env.RELEASE_TAG }}-windows
+          if-no-files-found: error
+          path: |
+            src-tauri/target/release/bundle/**/*.exe
+            src-tauri/target/release/bundle/**/*.msi
+
+      - name: Upload installers to GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $assets = Get-ChildItem -Path "src-tauri\target\release\bundle" -Recurse -File | Where-Object { $_.Extension -in @(".exe", ".msi") }
+          if (-not $assets) {
+            throw "No Windows installer was produced."
+          }
+          gh release upload $env:RELEASE_TAG ($assets.FullName) --repo $env:GITHUB_REPOSITORY --clobber

@@ -4,14 +4,35 @@ $projectRoot = Split-Path -Parent $PSScriptRoot
 $runtimeDir = Join-Path $projectRoot 'src-tauri\resources\bin\windows'
 $appRuntimeDir = Join-Path $projectRoot 'src-tauri\resources\app-runtime'
 $nodeSource = (Get-Command node -ErrorAction Stop).Source
-$ffmpegSource = $env:OMNI_FFMPEG_PATH
 
-if (-not $ffmpegSource) {
-  $systemFfmpeg = Get-Command ffmpeg -ErrorAction SilentlyContinue
-  if ($systemFfmpeg) {
-    $ffmpegSource = $systemFfmpeg.Source
+function Resolve-FfmpegPath {
+  if ($env:OMNI_FFMPEG_PATH) {
+    return $env:OMNI_FFMPEG_PATH
   }
+
+  $systemFfmpeg = Get-Command ffmpeg -ErrorAction SilentlyContinue
+  if (-not $systemFfmpeg) {
+    return $null
+  }
+
+  $candidate = $systemFfmpeg.Source
+  if ($env:ChocolateyInstall) {
+    $chocoBin = Join-Path $env:ChocolateyInstall 'bin'
+    if ($candidate.StartsWith($chocoBin, [System.StringComparison]::OrdinalIgnoreCase)) {
+      $packageTools = Join-Path $env:ChocolateyInstall 'lib\ffmpeg\tools'
+      if (Test-Path $packageTools) {
+        $realFfmpeg = Get-ChildItem -Path $packageTools -Recurse -Filter ffmpeg.exe | Select-Object -First 1
+        if ($realFfmpeg) {
+          return $realFfmpeg.FullName
+        }
+      }
+    }
+  }
+
+  return $candidate
 }
+
+$ffmpegSource = Resolve-FfmpegPath
 
 if (-not $ffmpegSource) {
   throw 'No FFmpeg executable found. Install a redistributable GPL build on PATH or set OMNI_FFMPEG_PATH.'

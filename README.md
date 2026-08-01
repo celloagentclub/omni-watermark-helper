@@ -24,8 +24,9 @@ Rust 或 FFmpeg。
 ### Windows
 
 Windows x64 源码、Tauri 配置和 CI 编译检查已经放在仓库里，但当前还没有经过真实
-Windows 电脑完整打包和干净机验收，因此暂不提供稳定 Windows 安装包。Windows 用户
-可以先按下方开发说明从源码运行；正式安装包会在 Windows 真机问题修复后再发布。
+Windows 电脑完整打包和干净机验收，因此暂不标记为稳定版。维护者可以通过 GitHub
+Actions 的 `Windows package` workflow 自动生成 `.exe` / `.msi` 安装包，也可以按
+[Windows 打包说明](docs/windows-packaging.md) 在 Windows 真机手工打包。
 
 ## 交流群
 
@@ -134,6 +135,7 @@ npm run build:windows
 安装包。如果系统 `PATH` 中没有可再分发的 GPL FFmpeg，请先通过
 `OMNI_FFMPEG_PATH` 指定 `ffmpeg.exe`；脚本会拒绝带 `--enable-nonfree` 的构建。
 Windows 安装包必须在真实 Windows 环境构建和验收；正式分发建议使用代码签名证书。
+详细交接步骤见 [Windows 打包说明](docs/windows-packaging.md)。
 
 ## 命令行
 
